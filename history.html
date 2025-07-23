@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geçmiş – Esentrader</title>
+  <style>
+    body { font-family: Arial; background: #f5f5f5; padding: 20px; }
+    h2 { margin-bottom: 20px; }
+    .history-panel { max-width: 800px; margin: auto; }
+    .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+    .history-card { background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .positive { color: green; }
+    .negative { color: red; }
+    .top { font-weight: bold; font-size: 16px; }
+    .details { margin-top: 8px; }
+    .timestamp { font-size: 12px; color: #666; margin-top: 6px; }
+  </style>
+</head>
+<body>
+
+  <section class="history-panel">
+    <h2>📜 Kapatılan İşlemler – Esentrader</h2>
+
+    <!-- 🔍 Filtre Alanı -->
+    <div class="filter-bar">
+      <select id="filter-symbol">
+        <option value="all">Tüm Semboller</option>
+        <option value="ASELS">ASELS</option>
+        <option value="SISE">SISE</option>
+        <option value="THYAO">THYAO</option>
+        <option value="KRDMD">KRDMD</option>
+      </select>
+
+      <input type="date" id="filter-date" />
+      <button onclick="applyFilters()">Filtrele</button>
+    </div>
+
+    <!-- 📋 İşlem Listesi -->
+    <div id="history-container"></div>
+  </section>
+
+  <script>
+    const closedTrades = [
+      {
+        symbol: "ASELS",
+        quantity: 13,
+        total: 483.60,
+        entry: 37.20,
+        exit: 38.10,
+        pl: +11.70,
+        plPercent: +2.42,
+        date: "2025-07-15T15:10:00"
+      },
+      {
+        symbol: "SISE",
+        quantity: 10,
+        total: 248.00,
+        entry: 24.80,
+        exit: 23.90,
+        pl: -9.00,
+        plPercent: -3.63,
+        date: "2025-07-15T14:50:00"
+      }
+    ];
+
+    function applyFilters() {
+      const symbol = document.getElementById('filter-symbol').value;
+      const date = document.getElementById('filter-date').value;
+      const container = document.getElementById('history-container');
+      container.innerHTML = "";
+
+      const filtered = closedTrades.filter(trade => {
+        const matchSymbol = symbol === "all" || trade.symbol === symbol;
+        const matchDate = !date || trade.date.startsWith(date);
+        return matchSymbol && matchDate;
+      });
+
+      filtered.forEach(trade => {
+        const card = document.createElement('div');
+        card.className = 'history-card';
+        card.innerHTML = `
+          <div class="top"><strong>${trade.symbol}</strong> • ${trade.quantity} adet • ${trade.total}₺</div>
+          <div class="details">
+            Giriş: ${trade.entry}₺ • Kapat: ${trade.exit}₺ • K/Z: 
+            <span class="${trade.pl >= 0 ? 'positive' : 'negative'}">
+              ${trade.pl >= 0 ? '+' : ''}${trade.pl.toFixed(2)}₺
+            </span> (${trade.plPercent.toFixed(2)}%)
+          </div>
+          <div class="timestamp">Kapatma: ${new Date(trade.date).toLocaleString('tr-TR')}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    applyFilters();
+  </script>
+</body>
+</html>
