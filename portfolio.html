@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portföy – Esentrader</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+    .chart-area { max-width: 400px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; }
+    table { width: 100%; margin-top: 30px; border-collapse: collapse; background: #fff; }
+    th, td { padding: 10px; border: 1px solid #ccc; text-align: center; }
+    th { background: #eee; }
+    .positive { color: green; }
+    .negative { color: red; }
+  </style>
+</head>
+<body>
+
+  <h1>📊 Portföy Özeti</h1>
+
+  <div class="portfolio-summary">
+    <p><strong>Toplam Varlık:</strong> 7,219.00₺</p>
+    <p><strong>K/Z Toplam:</strong> <span class="positive">+49.80₺ (+2.18%)</span></p>
+  </div>
+
+  <div class="chart-area">
+    <canvas id="portfolioChart" width="300" height="300"></canvas>
+  </div>
+
+  <h2>📋 Pozisyonlar</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Sembol</th>
+        <th>Adet</th>
+        <th>Ortalama Giriş</th>
+        <th>Güncel Fiyat</th>
+        <th>Toplam Değer</th>
+        <th>K/Z (₺ / %)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>ASELS</td>
+        <td>20</td>
+        <td>37.04₺</td>
+        <td>38.10₺</td>
+        <td>762.00₺</td>
+        <td class="positive">+21.20₺ / +2.86%</td>
+      </tr>
+      <tr>
+        <td>THYAO</td>
+        <td>20</td>
+        <td>295.50₺</td>
+        <td>293.20₺</td>
+        <td>5,864.00₺</td>
+        <td class="negative">−46.00₺ / −0.78%</td>
+      </tr>
+      <tr>
+        <td>SISE</td>
+        <td>10</td>
+        <td>24.80₺</td>
+        <td>23.90₺</td>
+        <td>239.00₺</td>
+        <td class="negative">−9.00₺ / −3.63%</td>
+      </tr>
+      <tr>
+        <td>KRDMD</td>
+        <td>30</td>
+        <td>11.00₺</td>
+        <td>11.80₺</td>
+        <td>354.00₺</td>
+        <td class="positive">+24.00₺ / +7.27%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+    const ctx = document.getElementById('portfolioChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['ASELS', 'THYAO', 'SISE', 'KRDMD'],
+        datasets: [{
+          data: [762, 5864, 239, 354],
+          backgroundColor: ['#4fc3f7', '#ff4f4f', '#3fd374', '#fbc02d'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const value = context.raw;
+                const total = context.dataset.data.reduce((a,b) => a + b, 0);
+                const percent = ((value / total) * 100).toFixed(2);
+                return `${context.label}: ${value}₺ (${percent}%)`;
+              }
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
